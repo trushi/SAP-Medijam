@@ -1,0 +1,68 @@
+<html>
+
+<head>
+<meta name="description" content="Viz Pie Chart with OData" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Pie Char with OData service</title>
+    <link rel="stylesheet" type="text/css" href="">
+
+    <script id="sap-ui-bootstrap" src="https://sapui5.netweaver.ondemand.com/resources/sap-ui-core.js" type="text/javascript" data-sap-ui-libs="sap.ui.core,sap.viz" data-sap-ui-theme="sap_goldreflection">
+    </script>
+    <script>
+	var sURI = 'pat1.xsodata';
+	var oModel = new sap.ui.model.odata.ODataModel(sURI, true);
+	var oJSONModel = new sap.ui.model.json.JSONModel();
+	
+	// read data from OData and write to JSON model
+	/*oModel.read("/pat1, {
+	    urlParameters : {
+	        "$top": 7
+	    },
+	    sorters : 
+	});*/
+
+	var oDataset = new sap.viz.ui5.data.FlattenedDataset({
+        dimensions: [{
+            axis: 1,
+            name: 'Category',
+            value: '{DATE_ID}'
+           
+        }],
+        
+        measures: [{
+            name: 'ProductID',
+            value: "{LIGHT_TIME}"
+            
+        }],
+        data: {
+         path: "/pat1",
+         sorter : new sap.ui.model.Sorter("DATE_ID", true)
+         //,
+         //parameters: {select: 'ProductID,Category/CategoryName',expand: 'Category'}
+        }
+    });
+
+    var axis = new sap.viz.ui5.types.Axis().setScale(new sap.viz.ui5.types.Axis_scale().setMinValue(0).setMaxValue(8).setFixedRange(true));
+    oChart = new sap.viz.ui5.Column({
+		width : "100%",
+	    height : "100%",
+	    title: {
+            visible: true,
+            text:'Sleep Pattern'
+        },
+        xAxis : axis,
+		dataset: oDataset
+	});
+    oChart.setModel(oModel)  
+	oChart.placeAt("content") 
+	oDataset.getBinding("data").getLength = function() { return 7; };
+    </script>
+
+</head>
+
+<body class="sapUiBody" role="application">
+    <div id="content"></div>
+</body>
+
+</html>
